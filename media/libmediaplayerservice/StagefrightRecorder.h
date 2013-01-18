@@ -118,6 +118,7 @@ private:
 
     String8 mParams;
 
+    bool mUserSetupFrameRate;
     bool mIsMetaDataStoredInVideoBuffers;
     MediaProfiles *mEncoderProfiles;
 
