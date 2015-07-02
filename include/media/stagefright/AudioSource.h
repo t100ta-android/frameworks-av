@@ -58,7 +58,6 @@ struct AudioSource : public MediaSource, public MediaBufferObserver {
 protected:
     virtual ~AudioSource();
 
-private:
     enum {
         kMaxBufferSize = 2048,
 

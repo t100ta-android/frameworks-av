@@ -86,12 +86,14 @@ protected:
     virtual ~NuPlayer();
 
     virtual void onMessageReceived(const sp<AMessage> &msg);
-
+    virtual bool ifDecodedPCMOffload() {return false;}
+    virtual void setDecodedPcmOffload(bool /*decodePcmOffload*/) {}
+    virtual bool canOffloadDecodedPCMStream(const sp<MetaData> /*meta*/,
+            bool /*hasVideo*/, bool /*isStreaming*/, audio_stream_type_t /*streamType*/) {return false;}
 public:
     struct NuPlayerStreamListener;
     struct Source;
 
-private:
     struct Decoder;
     struct DecoderBase;
     struct DecoderPassThrough;
@@ -109,6 +111,7 @@ private:
     struct PostMessageAction;
     struct SimpleAction;
 
+protected:
     enum {
         kWhatSetDataSource              = '=DaS',
         kWhatPrepare                    = 'prep',
@@ -225,7 +228,7 @@ private:
     void closeAudioSink();
     void determineAudioModeChange();
 
-    status_t instantiateDecoder(bool audio, sp<DecoderBase> *decoder);
+    virtual status_t instantiateDecoder(bool audio, sp<DecoderBase> *decoder);
 
     status_t onInstantiateSecureDecoders();
 
