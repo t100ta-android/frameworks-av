@@ -32,6 +32,8 @@
 #include <media/stagefright/VideoFrameScheduler.h>
 
 #include <inttypes.h>
+#include "mediaplayerservice/AVNuExtensions.h"
+#include "stagefright/AVExtensions.h"
 
 #include "stagefright/AVExtensions.h"
 namespace android {
@@ -1695,7 +1697,6 @@ status_t NuPlayer::Renderer::onOpenAudioSink(
             ALOGV("Mime \"%s\" mapped to audio_format 0x%x",
                     mime.c_str(), audioFormat);
 
-            audioFormat = AVUtils::get()->updateAudioFormat(audioFormat, format);
             bitWidth = AVUtils::get()->getAudioSampleBits(format);
             int avgBitRate = -1;
             format->findInt32("bit-rate", &avgBitRate);
@@ -1799,7 +1800,7 @@ status_t NuPlayer::Renderer::onOpenAudioSink(
         const PcmInfo info = {
                 (audio_channel_mask_t)channelMask,
                 (audio_output_flags_t)pcmFlags,
-                AUDIO_FORMAT_PCM_16_BIT, // TODO: change to audioFormat
+                AVNuUtils::get()->getPCMFormat(format),
                 numChannels,
                 sampleRate
         };
@@ -1834,7 +1835,7 @@ status_t NuPlayer::Renderer::onOpenAudioSink(
                     sampleRate,
                     numChannels,
                     (audio_channel_mask_t)channelMask,
-                    AUDIO_FORMAT_PCM_16_BIT,
+                    AVNuUtils::get()->getPCMFormat(format),
                     0 /* bufferCount - unused */,
                     mUseAudioCallback ? &NuPlayer::Renderer::AudioSinkCallback : NULL,
                     mUseAudioCallback ? this : NULL,

@@ -1299,7 +1299,11 @@ void NuPlayer::onStart(int64_t startPositionUs) {
     }
 
     sp<MetaData> audioMeta = mSource->getFormatMeta(true /* audio */);
+
+    AVNuUtils::get()->setSourcePCMFormat(audioMeta);
+
     audio_stream_type_t streamType = AUDIO_STREAM_MUSIC;
+
     if (mAudioSink != NULL) {
         streamType = mAudioSink->getAudioStreamType();
     }
@@ -1316,7 +1320,7 @@ void NuPlayer::onStart(int64_t startPositionUs) {
     sp<AMessage> notify = new AMessage(kWhatRendererNotify, this);
     ++mRendererGeneration;
     notify->setInt32("generation", mRendererGeneration);
-    mRenderer = new Renderer(mAudioSink, notify, flags);
+    mRenderer = AVNuFactory::get()->createRenderer(mAudioSink, notify, flags);
     mRendererLooper = new ALooper;
     mRendererLooper->setName("NuPlayerRenderer");
     mRendererLooper->start(false, false, ANDROID_PRIORITY_AUDIO);
@@ -1578,16 +1582,20 @@ status_t NuPlayer::instantiateDecoder(
         if (checkAudioModeChange) {
             determineAudioModeChange();
         }
-        if (mOffloadAudio) {
+        if (mOffloadAudio)
             mSource->setOffloadAudio(true /* offload */);
 
+        if (AVNuUtils::get()->isRAWFormat(format)) {
+            AVNuUtils::get()->setPCMFormat(format,
+                    AVNuUtils::get()->getKeyPCMFormat(mSource->getFormatMeta(true /* audio */)));
+        }
+        if (mOffloadAudio) {
             const bool hasVideo = (mSource->getFormat(false /*audio */) != NULL);
             format->setInt32("has-video", hasVideo);
             *decoder = AVNuFactory::get()->createPassThruDecoder(notify, mSource, mRenderer);
         } else {
             mSource->setOffloadAudio(false /* offload */);
-
-            *decoder = new Decoder(notify, mSource, mPID, mRenderer);
+            *decoder = AVNuFactory::get()->createDecoder(notify, mSource, mPID, mRenderer);
         }
     } else {
         sp<AMessage> notify = new AMessage(kWhatVideoNotify, this);

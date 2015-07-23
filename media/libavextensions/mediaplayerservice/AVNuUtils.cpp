@@ -52,6 +52,53 @@ void AVNuUtils::printFileName(int) {}
 
 bool AVNuUtils::dropCorruptFrame() { return false; }
 
+
+bool AVNuUtils::pcmOffloadException(const sp<AMessage> &) {
+    return true;
+}
+
+bool AVNuUtils::isRAWFormat(const sp<MetaData> &) {
+    return false;
+}
+
+bool AVNuUtils::isRAWFormat(const sp<AMessage> &) {
+    return false;
+}
+
+int AVNuUtils::updateAudioBitWidth(audio_format_t /*audioFormat*/,
+        const sp<AMessage> &){
+    return 16;
+}
+
+audio_format_t AVNuUtils::getKeyPCMFormat(const sp<MetaData> &) {
+    return AUDIO_FORMAT_INVALID;
+}
+
+void AVNuUtils::setKeyPCMFormat(const sp<MetaData> &, audio_format_t /*audioFormat*/) {
+
+}
+
+audio_format_t AVNuUtils::getPCMFormat(const sp<AMessage> &) {
+    return AUDIO_FORMAT_PCM_16_BIT;
+}
+
+void AVNuUtils::setPCMFormat(const sp<AMessage> &, audio_format_t /*audioFormat*/) {
+
+}
+
+void AVNuUtils::setSourcePCMFormat(const sp<MetaData> &) {
+
+}
+
+void AVNuUtils::setDecodedPCMFormat(const sp<AMessage> &) {
+
+}
+
+
+void AVNuUtils::overWriteAudioOutputFormat(
+       sp <AMessage> & /*dst*/, const sp <AMessage> & /*src*/) {
+}
+
 // ----- NO TRESSPASSING BEYOND THIS LINE ------
 AVNuUtils::AVNuUtils() {}
 
@@ -62,4 +109,3 @@ AVNuUtils *AVNuUtils::sInst =
         ExtensionsLoader<AVNuUtils>::createInstance("createExtendedNuUtils");
 
 } //namespace android
-
