@@ -59,6 +59,7 @@
 #include <media/stagefright/MediaCodecList.h>
 #include <media/stagefright/MediaErrors.h>
 #include <media/stagefright/AudioPlayer.h>
+#include <media/stagefright/Utils.h>
 #include <media/stagefright/foundation/ADebug.h>
 #include <media/stagefright/foundation/ALooperRoster.h>
 #include <mediautils/BatteryNotifier.h>
@@ -742,7 +743,8 @@ status_t MediaPlayerService::Client::setDataSource(
 
 status_t MediaPlayerService::Client::setDataSource(int fd, int64_t offset, int64_t length)
 {
-    ALOGV("setDataSource fd=%d, offset=%" PRId64 ", length=%" PRId64 "", fd, offset, length);
+    ALOGV("setDataSource fd=%d (%s), offset=%" PRId64 ", length=%" PRId64 "",
+            fd, nameForFd(fd).c_str(), offset, length);
     struct stat sb;
     int ret = fstat(fd, &sb);
     if (ret != 0) {
