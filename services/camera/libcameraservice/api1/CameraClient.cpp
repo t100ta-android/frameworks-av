@@ -234,7 +234,7 @@ void CameraClient::disconnect() {
     LOG1("disconnect E (pid %d)", callingPid);
     Mutex::Autolock lock(mLock);
 
-    // Allow both client and the media server to disconnect at all times
+    // Allow both client and the cameraserver to disconnect at all times
     if (callingPid != mClientPid && callingPid != mServicePid) {
         ALOGW("different client - don't disconnect");
         return;

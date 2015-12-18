@@ -60,6 +60,8 @@ public:
      *          permissions checking.
      * @param clientUid the UID of the camera-using application if camera is
      *          NULL; otherwise ignored. Used for permissions checking.
+     * @param clientPid the PID of the camera-using application if camera is
+     *          NULL; otherwise ignored. Used for permissions checking.
      * @param videoSize the dimension (in pixels) of the video frame
      * @param frameRate the target frames per second
      * @param surface the preview surface for display where preview
@@ -80,6 +82,7 @@ public:
                                           int32_t cameraId,
                                           const String16& clientName,
                                           uid_t clientUid,
+                                          pid_t clientPid,
                                           Size videoSize,
                                           int32_t frameRate,
                                           const sp<IGraphicBufferProducer>& surface,
@@ -169,7 +172,7 @@ protected:
     int64_t mTimeBetweenFrameCaptureUs;
 
     CameraSource(const sp<ICamera>& camera, const sp<ICameraRecordingProxy>& proxy,
-                 int32_t cameraId, const String16& clientName, uid_t clientUid,
+                 int32_t cameraId, const String16& clientName, uid_t clientUid, pid_t clientPid,
                  Size videoSize, int32_t frameRate,
                  const sp<IGraphicBufferProducer>& surface,
                  bool storeMetaDataInVideoBuffers);
@@ -211,19 +214,20 @@ private:
 
 
     status_t init(const sp<ICamera>& camera, const sp<ICameraRecordingProxy>& proxy,
-                  int32_t cameraId, const String16& clientName, uid_t clientUid,
+                  int32_t cameraId, const String16& clientName, uid_t clientUid, pid_t clientPid,
                   Size videoSize, int32_t frameRate, bool storeMetaDataInVideoBuffers);
 
     status_t initWithCameraAccess(
                   const sp<ICamera>& camera, const sp<ICameraRecordingProxy>& proxy,
-                  int32_t cameraId, const String16& clientName, uid_t clientUid,
+                  int32_t cameraId, const String16& clientName, uid_t clientUid, pid_t clientPid,
                   Size videoSize, int32_t frameRate, bool storeMetaDataInVideoBuffers);
 
     status_t isCameraAvailable(const sp<ICamera>& camera,
                                const sp<ICameraRecordingProxy>& proxy,
                                int32_t cameraId,
                                const String16& clientName,
-                               uid_t clientUid);
+                               uid_t clientUid,
+                               pid_t clientPid);
 
     status_t isCameraColorFormatSupported(const CameraParameters& params);
     status_t configureCamera(CameraParameters* params,
