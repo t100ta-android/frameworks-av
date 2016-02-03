@@ -354,6 +354,7 @@ sp<IMediaCodecList> MediaPlayerService::getCodecList() const {
 }
 
 sp<IOMX> MediaPlayerService::getOMX() {
+    ALOGI("MediaPlayerService::getOMX");
     Mutex::Autolock autoLock(mLock);
 
     if (mOMX.get() == NULL) {
