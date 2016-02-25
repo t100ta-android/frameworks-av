@@ -226,7 +226,7 @@ protected:
 
     void tryOpenAudioSinkForOffload(const sp<AMessage> &format, bool hasVideo);
     void closeAudioSink();
-    void restartAudioFromOffload(
+    void restartAudio(
         int64_t currentPositionUs, bool forceNonOffload, bool needsToCreateAudioDecoder);
     void determineAudioModeChange();
 
