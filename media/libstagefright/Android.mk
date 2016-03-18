@@ -17,6 +17,7 @@ LOCAL_SRC_FILES:=                         \
         CameraSourceTimeLapse.cpp         \
         ClockEstimator.cpp                \
         CodecBase.cpp                     \
+        DataConverter.cpp                 \
         DataSource.cpp                    \
         DataURISource.cpp                 \
         DRMExtractor.cpp                  \

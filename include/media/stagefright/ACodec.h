@@ -25,6 +25,7 @@
 #include <media/stagefright/foundation/AHierarchicalStateMachine.h>
 #include <media/stagefright/CodecBase.h>
 #include <media/stagefright/FrameRenderTracker.h>
+#include <media/stagefright/MediaDefs.h>
 #include <media/stagefright/SkipCutBuffer.h>
 #include <OMX_Audio.h>
 
@@ -35,6 +36,7 @@ namespace android {
 struct ABuffer;
 struct MemoryDealer;
 struct DescribeColorFormatParams;
+struct DataConverter;
 
 struct ACodec : public AHierarchicalStateMachine, public CodecBase {
     ACodec();
@@ -176,7 +178,11 @@ protected:
         Status mStatus;
         unsigned mDequeuedAt;
 
-        sp<ABuffer> mData;
+        sp<ABuffer> mData;      // the client's buffer; if not using data conversion, this is the
+                                // codec buffer; otherwise, it is allocated separately
+        sp<RefBase> mMemRef;    // and a reference to the IMemory, so it does not go away
+        sp<ABuffer> mCodecData; // the codec's buffer
+        sp<RefBase> mCodecRef;  // and a reference to the IMemory
         sp<GraphicBuffer> mGraphicBuffer;
         int mFenceFd;
         FrameRenderTracker::Info *mRenderInfo;
@@ -263,6 +269,7 @@ protected:
     bool mLegacyAdaptiveExperiment;
     int32_t mMetadataBuffersToSubmit;
     size_t mNumUndequeuedBuffers;
+    sp<DataConverter> mConverter[2];
 
     int64_t mRepeatFrameDelayUs;
     int64_t mMaxPtsGapUs;
@@ -364,7 +371,8 @@ protected:
             bool encoder, int32_t numChannels, int32_t sampleRate, int32_t compressionLevel);
 
     status_t setupRawAudioFormat(
-            OMX_U32 portIndex, int32_t sampleRate, int32_t numChannels);
+            OMX_U32 portIndex, int32_t sampleRate, int32_t numChannels,
+            AudioEncoding encoding = kAudioEncodingPcm16bit);
 
     status_t setPriority(int32_t priority);
     status_t setOperatingRate(float rateFloat, bool isVideo);
