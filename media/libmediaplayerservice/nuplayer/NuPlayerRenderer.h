@@ -92,8 +92,9 @@ struct NuPlayer::Renderer : public AHandler {
     };
 
     enum AudioTearDownReason {
-        kDueToError = 0,
+        kDueToError = 0,   // Could restart with either offload or non-offload.
         kDueToTimeout,
+        kForceNonOffload,  // Restart only with non-offload.
     };
 
 protected:
@@ -258,7 +259,7 @@ protected:
     void notifyPosition();
     void notifyVideoLateBy(int64_t lateByUs);
     void notifyVideoRenderingStart();
-    void notifyAudioTearDown();
+    void notifyAudioTearDown(AudioTearDownReason reason);
 
     void flushQueue(List<QueueEntry> *queue);
     bool dropBufferIfStale(bool audio, const sp<AMessage> &msg);
